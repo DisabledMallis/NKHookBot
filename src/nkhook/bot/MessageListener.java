@@ -26,6 +26,7 @@ public class MessageListener extends ListenerAdapter{
 		Guild guild = event.getGuild();
 		Role testers = guild.getRolesByName("Testers", false).get(0);
 		Role staff = guild.getRolesByName("Staff", false).get(0);
+		Role pings = guild.getRolesByName("Pings", false).get(0);
 
 		if(chan.getName().contains("bot-cmds")) {
 			if(!author.isBot()) {
@@ -36,6 +37,14 @@ public class MessageListener extends ListenerAdapter{
 						}
 						else {
 							guild.removeRoleFromMember(guild.getMember(author), testers).queue();
+						}
+					}
+					if(rawMsg.substring(2).startsWith("pings")) {
+						if(!guild.getMember(author).getRoles().contains(pings)) {
+							guild.addRoleToMember(guild.getMember(author), pings).queue();
+						}
+						else {
+							guild.removeRoleFromMember(guild.getMember(author), pings).queue();
 						}
 					}
 					if(rawMsg.substring(2).startsWith("chaninfo")) {
@@ -49,6 +58,7 @@ public class MessageListener extends ListenerAdapter{
 									"    - nkChanInfo: an administrative command to send this\r\n" +
 									"    - nkRepo: the NKHook main github repo\r\n" +
 									"    - nkShutdown: turns off the bot. requires staff.\r\n" +
+									"    - nkDownload: Get the latest NKHook release\r\n" +
 									"```").queue();
 						}
 					}
@@ -57,7 +67,8 @@ public class MessageListener extends ListenerAdapter{
 							.queue(message -> message.addReaction("U+2705").queue());
 					}
 					if(rawMsg.substring(2).startsWith("download")) {
-						chan.sendMessage(GithubWrapper.getInstance().getLatestDownload()).queue();
+						chan.sendMessage(GithubWrapper.getInstance().getLatestDownload())
+							.queue(message -> message.addReaction("U+2705").queue());
 					}
 					if(rawMsg.substring(2).startsWith("shutdown")) {
 						if(guild.getMember(author).getRoles().contains(staff)) {

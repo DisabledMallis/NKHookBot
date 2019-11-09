@@ -35,7 +35,6 @@ public class GithubWrapper {
 			String returner = "**Latest Release**\n";
 			for(JSONObject jobj : jobjList) {
 				String name = (String)jobj.get("name");
-				System.out.println(name);
 				for(Object val : ((JSONArray)(jobj.get("assets")))) {
 					JSONObject jprop = (JSONObject)val;
 					String dlName = (String) jprop.get("browser_download_url");
